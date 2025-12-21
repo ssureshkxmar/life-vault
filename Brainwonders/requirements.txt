@@ -1,0 +1,16 @@
+numpy<2
+streamlit
+fastapi
+uvicorn
+scikit-learn
+xgboost
+pandas
+matplotlib
+seaborn
+plotly
+openai
+langchain
+faiss-cpu
+pymongo
+psycopg2-binary
+python-multipart
