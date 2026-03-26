@@ -14,3 +14,6 @@ faiss-cpu
 pymongo
 psycopg2-binary
 python-multipart
+fpdf2
+requests
+httpx

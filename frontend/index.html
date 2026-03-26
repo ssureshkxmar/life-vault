@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Vault | Elite Career Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { background-color: #f8fafc; color: #0f172a; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 12px; }
+        .logo span { color: #2563eb; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #2563eb, #4f46e5); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+
+        .start-btn {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white; padding: 12px 28px; border-radius: 8px; font-weight: 600;
+            cursor: pointer; border: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+            font-size: 1rem;
+        }
+        .start-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); }
+
+        .user-profile {
+            display: flex; align-items: center; gap: 12px; font-weight: 600; color: #334155;
+            background: #f1f5f9; padding: 6px 14px 6px 6px; border-radius: 50px;
+            border: 1px solid #e2e8f0; cursor: pointer; position: relative;
+        }
+        .user-profile img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .signout-btn {
+            position: absolute; top: calc(100% + 10px); right: 0; background: white; padding: 10px 20px;
+            border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;
+            color: #ef4444; font-weight: 600; cursor: pointer; display: none; transition: 0.2s; white-space: nowrap;
+        }
+        .user-profile:hover .signout-btn { display: block; }
+        .signout-btn:hover { background: #fef2f2; }
+
+        /* Animated Mesh Hero */
+        .hero {
+            flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 0 20px; position: relative; overflow: hidden;
+            background: #ffffff;
+        }
+        .hero::before {
+            content: ""; position: absolute; width: 150vw; height: 150vh;
+            background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.05) 0%, rgba(79, 70, 229, 0.05) 30%, transparent 70%);
+            animation: breathe 10s infinite alternate ease-in-out; pointer-events: none;
+        }
+        @keyframes breathe { 0% { transform: scale(1); } 100% { transform: scale(1.1) translate(20px, 20px); } }
+
+        .hero-content {
+            position: relative; z-index: 2;
+            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px);
+            padding: 50px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.03); max-width: 800px;
+        }
+        .hero h1 { font-size: 4rem; font-weight: 800; color: #0f172a; margin-bottom: 24px; letter-spacing: -1.5px; line-height: 1.1; }
+        .hero h1 span { background: linear-gradient(135deg, #2563eb, #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.25rem; color: #475569; margin-bottom: 30px; line-height: 1.7; }
+        
+        .auth-guard-msg { font-size: 0.95rem; color: #64748b; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .auth-guard-msg i { color: #f59e0b; }
+
+        .app-container { flex-grow: 1; width: 100%; position: relative; background: #f8fafc; display: none; }
+        iframe { width: 100%; height: 100%; border: none; display: block; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <img src="assets/logo.png" alt="Life Vault Logo" style="height: 48px;">
+            <div style="display: flex; flex-direction: column; line-height: 1;">
+                <span style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">LIFE<span style="color: #2563eb;">VAULT</span></span>
+                <span style="font-size: 0.65rem; color: #64748b; font-weight: 600; letter-spacing: 0.5px;">SECURE CAREER INTELLIGENCE</span>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <a href="#" onclick="goHome()" style="color: #475569; text-decoration: none; font-weight: 600; margin-right: 15px;">Home</a>
+            
+            <!-- Auth Controls -->
+            <div id="auth-controls" style="display: flex; align-items: center;">
+                <div id="g_id_onload"
+                     data-client_id="1001831003943-eqr8jof0hgto4ns1in822f8qgu8e74mp.apps.googleusercontent.com"
+                     data-context="signin"
+                     data-ux_mode="popup"
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_blue" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
+            </div>
+
+            <!-- User Controls -->
+            <div id="user-controls" style="display: none; align-items: center; gap: 20px;">
+                <button class="start-btn" onclick="startAnalysis()">Start Analysis Pipeline &rarr;</button>
+                <div class="user-profile">
+                    <img id="user-avatar" src="" alt="Profile" referrerpolicy="no-referrer">
+                    <span id="user-name">User</span>
+                    <div class="signout-btn" onclick="signOut()">Sign Out</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero" id="heroView">
+        <div class="hero-content">
+            <h1>Vault Your Future with <br><span>Life Intelligence</span></h1>
+            <p>Life Vault is your ultimate destination for cognitive safety and career mapping. Secure your potential with our advanced AI assessing your assessment data now.</p>
+            
+            <div id="hero-auth-guard">
+                <div class="auth-guard-msg">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    Sign in to Life Vault securely to unlock the Assessment Pipeline
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container" id="appView">
+        <iframe src="http://localhost:8501/?embed=true" title="Life Vault Engine" allow="autoplay; microphone; camera; midi; encrypted-media; clipboard-read; clipboard-write; display-capture; geolocation; magnetometer; gyroscope; microphone"></iframe>
+    </div>
+
+    <script>
+        let userName = "User";
+
+        function parseJwt(token) {
+            try {
+                var base64Url = token.split('.')[1];
+                var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch(e) { return {name: "Student"}; }
+        }
+
+        function handleCredentialResponse(response) {
+            const data = parseJwt(response.credential);
+            userName = data.name;
+            document.getElementById('user-name').innerText = data.name;
+            document.getElementById('user-avatar').src = data.picture;
+            
+            // Switch UI states
+            document.getElementById('auth-controls').style.display = 'none';
+            document.getElementById('user-controls').style.display = 'flex';
+            document.getElementById('heroView').querySelector('h1').innerHTML = `Hey ${data.name}! <br>Vault Your Future with <span>Life Intelligence</span>`;
+            document.getElementById('hero-auth-guard').innerHTML = '<button class="start-btn" style="font-size: 1.1rem; padding: 16px 40px; background: linear-gradient(135deg, #10b981, #059669);" onclick="startAnalysis()">Begin Your Journey</button>';
+        }
+
+        function goHome() {
+            document.getElementById('heroView').style.display = 'flex';
+            document.getElementById('appView').style.display = 'none';
+        }
+
+        function signOut() {
+            google.accounts.id.disableAutoSelect();
+            location.reload(); // Force reload to clear all states properly
+        }
+
+        function startAnalysis() {
+            document.getElementById('heroView').style.display = 'none';
+            const appView = document.getElementById('appView');
+            appView.style.display = 'block';
+            
+            // Re-point iframe with user name as query param
+            const iframe = appView.querySelector('iframe');
+            iframe.src = "http://localhost:8501/?name=" + encodeURIComponent(userName) + "&embed=true";
+        }
+    </script>
+</body>
+</html>
