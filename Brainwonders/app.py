@@ -249,7 +249,13 @@ else:
     # Report Header with Company Logo
     col1, col2 = st.columns([1, 4])
     with col1:
-        st.image("assets/logo.png", width=128)
+        import os
+        logo_path = os.path.join(os.path.dirname(__file__), "assets/logo.png")
+        if os.path.exists(logo_path):
+            st.image(logo_path, width=128)
+        else:
+            st.image("assets/logo.png", width=128) # Fallback
+
     with col2:
         st.markdown(f'<div style="font-size: 1.8rem; font-weight: 800; color: #2563eb; margin-bottom: -10px;">LIFE VAULT</div>', unsafe_allow_html=True)
         st.markdown(f'<h1 class="main-title">Analysis: <span>{inputs["name"]}</span></h1>', unsafe_allow_html=True)
