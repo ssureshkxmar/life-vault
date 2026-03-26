@@ -1,19 +1,7 @@
-numpy<2
-streamlit
 fastapi
 uvicorn
-scikit-learn
-xgboost
-pandas
-matplotlib
-seaborn
-plotly
-openai
-langchain
-faiss-cpu
-pymongo
-psycopg2-binary
-python-multipart
-fpdf2
 requests
+pydantic
+python-multipart
 httpx
+# Small dependencies for the API
